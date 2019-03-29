@@ -1,10 +1,14 @@
 import requests
 import datetime
-
+# pdf生成
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.lib.units import cm
+# 配列演算
+import numpy as np
+# グラフ生成
+import matplotlib.pyplot as plt
 
 
 # レポート日
@@ -79,6 +83,17 @@ def cal_minimum(list):
             daily_min_dict["humi_mintime"] = item['time']['value']
     return daily_min_dict
 
+# 温度・湿度のグラフ表示
+def graph_records(list):
+    temp = []
+    time = []
+    for item in list:
+        temp.append(item['temp']['value'])
+        time.append(item['time']['value'])
+
+    return temp, time
+
+
 
 if __name__ == "__main__":
     # get_kintone
@@ -148,6 +163,8 @@ if __name__ == "__main__":
 
 
 
+    x, y = graph_records(room1)
+    print(len(r))
 
 
 
