@@ -101,6 +101,7 @@ if __name__ == "__main__":
     r = t['records']
     # room_list
     room1, room2, room3 = room_list(r)
+    print(room1)
     # cal_maximum, cal_minimum
     daily_list_max = []
     daily_list_min = []
@@ -161,13 +162,4 @@ if __name__ == "__main__":
     pdffile.drawString(10*cm, 20*cm, '最低湿度：'+value+'（'+time+'）')
 
 
-
-
-    x, y = graph_records(room1)
-    print(len(r))
-
-
-
-    pdffile.restoreState()
-    pdffile.save()
     
