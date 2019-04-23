@@ -1,5 +1,6 @@
 import requests
-import datetime
+from datetime import datetime, timedelta, timezone
+import pytz
 # pdf生成
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
@@ -17,9 +18,10 @@ from matplotlib import dates as mdates
 # 部屋番号リスト
 roomnum = [1, 2, 3]
 # レポート日
-today = datetime.date.today()
-yesterday = today - datetime.timedelta(days=1)
-reportdate = str(yesterday)
+jst = pytz.timezone('Asia/Tokyo')
+jst_now = datetime.now(tz=jst)
+jst_yesterday = jst_now - timedelta(days=1)
+reportdate = str(jst_yesterday.date())
 # kintoneアクセスへのクエリ＆APIトークン
 APP = "app=17"
 DATE = "date%20%3D%20%22"+reportdate+"%22%20"
@@ -124,14 +126,14 @@ if __name__ == "__main__":
 
     # pdf作成
     # 体裁部分
-    y = str(yesterday.year)
-    m = str(yesterday.month)
-    d = str(yesterday.day)
+    y = str(jst_yesterday.year)
+    m = str(jst_yesterday.month)
+    d = str(jst_yesterday.day)
     pdffile.drawString(1*cm, 28*cm, '株式会社　岩野　様')
     pdffile.drawString(1*cm, 27*cm, y+'年'+m+'月'+d+'日温度・湿度（時刻）状況')
-    yy = str(today.year)
-    mm = str(today.month)
-    dd = str(today.day)
+    yy = str(jst_now.year)
+    mm = str(jst_now.month)
+    dd = str(jst_now.day)
     pdffile.drawString(13*cm, 27*cm, '作成日：'+yy+'年'+mm+'月'+dd+'日')
     # 部屋１
     pdffile.drawString(1*cm, 26*cm, '部屋ID：１')
@@ -180,7 +182,7 @@ if __name__ == "__main__":
     # 時刻を文字列型からdatetime型に変換
     for i in r:
         for j in i:
-            tmp = datetime.datetime.strptime(j['time']['value'], '%H:%M')
+            tmp = datetime.strptime(j['time']['value'], '%H:%M')
             j['time']['value'] = tmp.time()
 
     # グラフ生成
@@ -211,7 +213,5 @@ if __name__ == "__main__":
     pdffile.setFillColorRGB(1, 1, 1)
     pdffile.drawString(0.5*cm, 0.5*cm, 'Copyright© 2019 GARAGELABO All Rights Reserved.')
     pdffile.drawInlineImage('GL_logo.png', 335, 6)
-
-
 
     pdffile.save()

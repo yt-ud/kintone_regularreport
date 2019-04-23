@@ -1,5 +1,8 @@
 import requests
 import json
+from datetime import datetime, timedelta, timezone
+import pytz
+
 
 URL = "https://garagelabo.cybozu.com:443"
 APP_ID = "43"
@@ -11,7 +14,6 @@ class KINTONE:
     def UploadToKintone(self, url, knt_pass,path,filename):
         tmp = open(path + filename, 'rb')
         files={'file':(filename,tmp,'pdf')}
-#        files={'file':(filename,tmp,'png')}
         headers = {"X-Cybozu-Authorization": knt_pass , 'X-Requested-With': 'XMLHttpRequest'} 
         resp=requests.post(url+"/k/v1/file.json",files=files,headers=headers)
 
@@ -31,10 +33,12 @@ class KINTONE:
 if __name__ == '__main__':
     # ファイル保存パス
     Path='/Users/yutaueda/Developments/Work/Garagelabo/Codes/Python/Iwano/kintone_regularreport/kintone_regularreport/'
-    # ファイル名
-    FileName='2019-04-21.pdf'
-
-
+    # 日付取得
+    jst = pytz.timezone('Asia/Tokyo')
+    jst_now = datetime.now(tz=jst)
+    jst_yesterday = jst_now - timedelta(days=1)
+    fname = str(jst_yesterday.date())
+    FileName = fname + '.pdf'
     knt=KINTONE()
     resp=knt.UploadToKintone(URL, KNT_PASS,Path,FileName)
 
